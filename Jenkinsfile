@@ -16,7 +16,7 @@ pipeline {
     stages {
             stage('Terraform Init'){
             steps {
-                dir('terraform_challenge/ec2_instance/'){
+                dir('/terraform_challenge'){
                     sh "terraform init -input=false"
                     sh "echo \$PWD"
                     sh "whoami"
@@ -26,7 +26,7 @@ pipeline {
 
         stage('Terraform Format'){
             steps {
-                dir('terraform_challenge/ec2_instance/'){
+                dir('/terraform_challenge'){
                     sh "terraform fmt -list=true -write=false -diff=true -check=true"
                 }
             }
@@ -34,7 +34,7 @@ pipeline {
 
         stage('Terraform Validate'){
             steps {
-                dir('terraform_challenge/ec2_instance/'){
+                dir('/terraform_challenge'){
                     sh "terraform validate"
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
 
         stage('Terraform Plan'){
             steps {
-                dir('terraform_challenge/ec2_instance/'){
+                dir('/terraform_challenge'){
                     script {
                         try {
                             sh "terraform workspace new ${params.WORKSPACE}"
@@ -61,14 +61,14 @@ pipeline {
                 script{
                     def apply = false
                     try {
-                        input message: 'Can you please confirm the apply', ok: 'Ready to Apply the Config'
+                        input message: 'Confirma si quieres aplicar estos cambios', ok: 'Listo para aplicar la Config'
                         apply = true
                     } catch (err) {
                         apply = false
                          currentBuild.result = 'UNSTABLE'
                     }
                     if(apply){
-                        dir('terraform_challenge/ec2_instance/'){
+                        dir('/terraform_challenge'){
                             unstash "terraform-plan"
                             sh 'terraform apply terraform.tfplan'
                         }

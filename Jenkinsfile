@@ -16,34 +16,29 @@ pipeline {
     stages {
             stage('Terraform Init'){
             steps {
-                dir('/terraform_challenge'){
-                    sh "terraform init -input=false"
-                    sh "echo \$PWD"
-                    sh "whoami"
-                }
+                sh "terraform init -input=false"
+                sh "echo \$PWD"
+                sh "whoami"
             }
         }
 
         stage('Terraform Format'){
             steps {
-                dir('/terraform_challenge'){
-                    sh "terraform fmt -list=true -write=false -diff=true -check=true"
+                sh "terraform fmt -list=true -write=false -diff=true -check=true"
                 }
             }
         }
 
         stage('Terraform Validate'){
             steps {
-                dir('/terraform_challenge'){
-                    sh "terraform validate"
+                sh "terraform validate"
                 }
             }
         }
 
         stage('Terraform Plan'){
             steps {
-                dir('/terraform_challenge'){
-                    script {
+                script {
                         try {
                             sh "terraform workspace new ${params.WORKSPACE}"
                         } catch (err) {
@@ -68,10 +63,8 @@ pipeline {
                          currentBuild.result = 'UNSTABLE'
                     }
                     if(apply){
-                        dir('/terraform_challenge'){
-                            unstash "terraform-plan"
-                            sh 'terraform apply terraform.tfplan'
-                        }
+                        unstash "terraform-plan"
+                        sh 'terraform apply terraform.tfplan'
                     }
                 }
             }

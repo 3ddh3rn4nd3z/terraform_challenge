@@ -28,13 +28,14 @@ pipeline{
         }
         stage('Terraform Plan'){
             steps {
+                withCredentials([string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'ACCESS_KEY'), string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'SECRET_KEY')])
                 script {
                     try {
                         echo "terraform workspace new ${params.WORKSPACE}"
                     } catch (err) {
                         echo "terraform worspace select ${params.WORKSPACE}"
                     }
-                    sh "terraform plan -var 'access_key=${env.ACCESS_KEY} -var 'secret_key=${env.SECRET_KEY} \
+                    echo "terraform plan \
                     -out terraform.tfplan;echo \$? > status"
                     stash name: "terraform-plan", includes: "terraform.tfplan"
                 }

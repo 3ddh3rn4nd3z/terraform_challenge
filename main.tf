@@ -1,8 +1,11 @@
-provider "aws" {
-  region = "us-east-1"
+module "networking" {
+  source       = "./networking"
+  vpc_cidr     = "10.0.0.0/16"
+  public_cidrs = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
-resource "aws_instance" "example" {
-  ami           = "ami-0721c9af7b9b75114"
-  instance_type = "t2.micro"
+module "compute" {
+  source        = "./ec2"
+  web_sg        = module.networking.web_sg
+  public_subnet = module.networking.public_subnet
 }

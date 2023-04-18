@@ -1,5 +1,5 @@
 pipeline{
-    agent linux
+    agent any
 
     parameters {
         string(name: 'WORKSPACE', defaultValue: 'development', description:'setting up workspace for terraform')        

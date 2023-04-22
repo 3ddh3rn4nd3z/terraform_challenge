@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'environment', defaultValue: 'terraform', description: 'Workspace/environment file to use for deployment')
-        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
+        string(name: 'environment', defaultValue: 'terraform', description: 'Workspace/ambiente que se utilizara para el deployment')
+        booleanParam(name: 'autoApprove', defaultValue: false, description: '¿Ejecutar automáticamente la aplicación después de generar el plan?')
         booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy Terraform build?')
 
     }
@@ -39,6 +39,7 @@ pipeline {
                 sh 'terraform workspace select ${environment} || terraform workspace new ${environment}'
 
                 sh "terraform plan -input=false -out tfplan "
+                sh "terraform terraform graph -type=plan | dot -Tpng -o graph.png"
                 sh 'terraform show -no-color tfplan > tfplan.txt'
             }
         }

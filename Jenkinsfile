@@ -39,7 +39,7 @@ pipeline {
                 sh 'terraform workspace select ${environment} || terraform workspace new ${environment}'
 
                 sh "terraform plan -input=false -out tfplan "
-                sh "terraform terraform graph -type=plan | dot -Tpng -o graph.png"
+                sh "terraform graph -type=plan | dot -Tpng -o graph.png"
                 sh 'terraform show -no-color tfplan > tfplan.txt'
             }
         }
